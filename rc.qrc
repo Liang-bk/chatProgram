@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/telegram_icon.ico</file>
+        <file>style/stylesheet.qss</file>
+    </qresource>
+</RCC>
