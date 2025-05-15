@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include "logindialog.h"
 #include "registerdialog.h"
-
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -24,7 +23,6 @@ private:
     Ui::MainWindow *ui;
     LoginDialog *login_dlg_;
     RegisterDialog *register_dlg_;
-
 
 };
 #endif // MAINWINDOW_H
