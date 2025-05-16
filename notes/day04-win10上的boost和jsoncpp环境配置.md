@@ -86,7 +86,7 @@ jsoncpp新版本不自带vs的sln项目文件，需要用其他方法：
 
 2. 等待`CMakeSettings.json`界面加载完毕，会出现CMake配置界面：
 
-   ![image-20250516103844019](img\jsoncpp-CMakeSettings.png)
+   ![image-20250516103844019](img/jsoncpp-CMakeSettings.png)
 
 3. 一开始只会有一个x64-Debug，按如下配置
 
@@ -126,9 +126,9 @@ jsoncpp新版本不自带vs的sln项目文件，需要用其他方法：
 
 4. 新建一个vs项目，在项目属性中设置如下选项：
 
-   ![image-20250516105645216](img\jsoncpp_project_setting.png)
+   ![image-20250516105645216](img/jsoncpp_project_setting.png)
 
-   ![image-20250516105736370](img\jsoncpp_project_setting2.png)
+   ![image-20250516105736370](img/jsoncpp_project_setting2.png)
 
 项目属性是Debug就用之前jsoncpp生成的Debug版本的库，Release亦然（如链接器的输入，Debug就用mdd版本，Release就用md版本）
 
