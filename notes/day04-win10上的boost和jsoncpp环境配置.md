@@ -134,6 +134,10 @@ jsoncpp新版本不自带vs的sln项目文件，需要用其他方法：
 
 Windows运行库目录一定要设置，否则运行时可能报dll文件找不到的错误
 
+**补充**：如果上面设置了dll路径仍然报dll找不到的错误，就将.dll文件直接放在vs工程源码同路径下
+
+![image-20250602114440382](E:\code\qt_server\chat\notes\img\json_cpp_project_setting3.png)
+
 运行下面的代码，生成并执行成功即为配置成功：
 
 ```c++
