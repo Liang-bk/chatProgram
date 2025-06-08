@@ -29,7 +29,13 @@ void RegisterDialog::on_get_code_clicked()
     bool match = regex.match(email).hasMatch();
     if (match) {
         // 发送验证码
-        showTip(tr(""), true);
+        showTip(tr("请求发送中..."), true);
+        QJsonObject post_json;
+        post_json["email"] = email;
+        HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/post_varifycode"),
+                                                post_json, ReqId::ID_GET_VARIFY_CODE, Modules::REGISTERMOD);
+
+
     } else {
         showTip(tr("邮箱地址不正确"), false);
     }

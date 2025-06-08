@@ -33,15 +33,15 @@ public:
             // 在子类中将Singleton类设为友元, 可以new子类, 否则也会报错
             instance_ = std::shared_ptr<T>(new T);
         });
-        return instance_;
 
+        return instance_;
     }
     /* 更简单的写法: (instance_就无用了)
-    static T& getInstance() {
-        static T instance;
-        return instance;
-    }
     */
+    // static std::shared_ptr<T> getInstance() {
+    //     static std::shared_ptr<T> instance = std::shared_ptr<T>(new T);
+    //     return instance;
+    // }
     void printAddress() {
         std::cout << instance_.get() << std::endl;
     }
