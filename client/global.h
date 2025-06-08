@@ -8,12 +8,14 @@
 #include <iostream>
 #include <mutex>
 #include <QByteArray>
-
+#include <QDir>
+#include <QSettings>
 /**
  * @brief repolish 重新刷新qss
  */
 extern std::function<void(QWidget*)> repolish;
 
+extern QString gate_server_prefix;
 /**
  * @brief The ReqId enum
  * 要实现的请求功能

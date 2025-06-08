@@ -25,6 +25,7 @@ void HttpManager::postHttpReq(QUrl url, QJsonObject json, ReqId req_id, Modules 
     auto self = shared_from_this();
     // 这里是异步发送
     QNetworkReply *reply = manager_.post(request, data);
+
     // 数据接收完成, 执行处理逻辑 finish信号和lambda的连接
     connect(reply, &QNetworkReply::finished, [reply, self, req_id, mod]() {
         if (reply->error() != QNetworkReply::NoError) {
