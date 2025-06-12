@@ -5,6 +5,8 @@
 #include "header/logic_system.h"
 
 #include "header/httpconnection.h"
+#include "header/message.pb.h"
+#include "header/verify_grpc_client.h"
 LogicSystem::LogicSystem() {
     registerGet("/get_test", [](std::shared_ptr<HttpConnection> connection) {
         beast::ostream(connection->response_.body()) << "receive get_test request\r\n";
@@ -37,7 +39,9 @@ LogicSystem::LogicSystem() {
         // toStyleString转换整个json到字符串
         auto email = request_json["email"].asString();
         std::cout << "post request: email is " << email << std::endl;
-        response_json["error"] = ErrorCodes::SUCCESS;
+        // 调用grpc向verifyServer请求验证
+        GetVerifyResponse verify_response = VerifyGrpcClient::getInstance()->GetVarifyCode(email);
+        response_json["error"] = verify_response.error();
         response_json["email"] = request_json["email"];
         std::string response_string = response_json.toStyledString();
         beast::ostream(connection->response_.body()) << response_string;
