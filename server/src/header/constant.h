@@ -8,6 +8,9 @@
 #include <boost/beast/http.hpp>
 #include <boost/beast.hpp>
 #include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include <memory>
 #include <map>
 #include <unordered_map>
@@ -28,4 +31,7 @@ enum ErrorCodes {
     ERROR_JSON = 1001,  // JSON解析失败
     RPC_FAILED = 1002,  // RPC请求失败
 };
+
+class ConfigManager;
+extern ConfigManager config;
 #endif //CONSTANT_H
