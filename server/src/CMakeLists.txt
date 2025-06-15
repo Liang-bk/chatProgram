@@ -24,8 +24,8 @@ add_executable(server
         source/message.grpc.pb.cc
         source/verify_grpc_client.cpp
         header/verify_grpc_client.h
-        source/config_manager.cpp
-        header/config_manager.h
+        source/config.cpp
+        header/config.h
 )
 
 # target_link_libraries(server ${Boost_LIBRARIES})

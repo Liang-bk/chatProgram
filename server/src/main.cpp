@@ -5,12 +5,10 @@
 #include "header/cserver.h"
 #include <cctype>
 #include "header/constant.h"
-#include "header/config_manager.h"
-
-ConfigManager config;
-
+#include "header/config.h"
 int main() {
-    std::string gate_port_str = config["GateServer"]["Port"];
+    auto gateserver_config = Config::getInstance()->getValue("GateServer");
+    std::string gate_port_str = gateserver_config["Port"].asString();
     unsigned short gate_port = atoi(gate_port_str.c_str());
     try
     {

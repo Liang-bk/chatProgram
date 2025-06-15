@@ -2,3 +2,6 @@ build/
 client/build
 server/.idea
 server/cmake-build-debug
+*.exe
+*.ilk
+*pdb
