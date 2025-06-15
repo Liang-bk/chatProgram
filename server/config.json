@@ -1,0 +1,9 @@
+{
+  "GateServer": {
+    "Port": 8000,
+    "other": "other..."
+  },
+  "VerifyServer": {
+    "Port": 50051
+  }
+}

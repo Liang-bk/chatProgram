@@ -32,6 +32,4 @@ enum ErrorCodes {
     RPC_FAILED = 1002,  // RPC请求失败
 };
 
-class ConfigManager;
-extern ConfigManager config;
 #endif //CONSTANT_H
