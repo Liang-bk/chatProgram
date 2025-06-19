@@ -24,7 +24,7 @@ class VerifyGrpcClient : public Singleton<VerifyGrpcClient> {
     friend class Singleton<VerifyGrpcClient>;
 public:
     ~VerifyGrpcClient();
-    GetVerifyResponse GetVarifyCode(std::string email);
+    GetVerifyResponse GetVerifyCode(std::string email);
 private:
     VerifyGrpcClient();
     std::unique_ptr<VerifyService::Stub> stub_;

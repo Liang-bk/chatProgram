@@ -18,10 +18,10 @@ LogicSystem::LogicSystem() {
                 item.first << ", value " << item.second << "\r\n";
         }
     });
-    registerPost("/post_varifycode", [](std::shared_ptr<HttpConnection> connection) {
+    registerPost("/post_verifycode", [](std::shared_ptr<HttpConnection> connection) {
         // 将body转为string类型
         auto body_string = boost::beast::buffers_to_string(connection->request_.body().data());
-        std::cout << "post_varifycode received: " << body_string << std::endl;
+        std::cout << "post_verifycode received: " << body_string << std::endl;
         // 回复JSON数据
         connection->response_.set(http::field::content_type, "text/json");
         Json::Value request_json, response_json;
@@ -40,7 +40,7 @@ LogicSystem::LogicSystem() {
         auto email = request_json["email"].asString();
         std::cout << "post request: email is " << email << std::endl;
         // 调用grpc向verifyServer请求验证
-        GetVerifyResponse verify_response = VerifyGrpcClient::getInstance()->GetVarifyCode(email);
+        GetVerifyResponse verify_response = VerifyGrpcClient::getInstance()->GetVerifyCode(email);
         response_json["error"] = verify_response.error();
         response_json["email"] = request_json["email"];
         std::string response_string = response_json.toStyledString();

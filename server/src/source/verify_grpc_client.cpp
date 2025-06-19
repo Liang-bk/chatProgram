@@ -1,5 +1,5 @@
 //
-// Created by 86183 on 2025/6/12.
+// Created by baikaishui on 2025/6/12.
 //
 
 #include "header/verify_grpc_client.h"
@@ -14,7 +14,7 @@ VerifyGrpcClient::~VerifyGrpcClient() {
 }
 
 
-GetVerifyResponse VerifyGrpcClient::GetVarifyCode(std::string email) {
+GetVerifyResponse VerifyGrpcClient::GetVerifyCode(std::string email) {
     ClientContext context;
     GetVerifyResponse reply;
     GetVerifyRequest request;
