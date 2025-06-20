@@ -8,16 +8,16 @@ set(JSONCPP_SRC
 
 
 # boost
-set(BOOST_ROOT "D:/MinGW/boost1_84_0")
+set(BOOST_ROOT "D:/MinGW/boost1_88_0")
 set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
 set(Boost_NO_SYSTEM_PATHS ON)
 
-find_package(Boost 1.84.0 REQUIRED COMPONENTS system filesystem thread)
+find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 
 if(Boost_FOUND)
     # 手动修正包含目录路径
-    set(Boost_INCLUDE_DIRS "${BOOST_ROOT}/include")
+    # set(Boost_INCLUDE_DIRS "${BOOST_ROOT}/include")
     set(BOOST_LIB_DIR "${BOOST_ROOT}/lib")
     message(STATUS "=== Boost Information ===")
     message(STATUS "Boost version: ${Boost_VERSION}")

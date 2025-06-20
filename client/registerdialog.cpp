@@ -32,7 +32,7 @@ void RegisterDialog::on_get_code_clicked()
         showTip(tr("请求发送中..."), true);
         QJsonObject post_json;
         post_json["email"] = email;
-        HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/post_varifycode"),
+        HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/post_verifycode"),
                                                 post_json, ReqId::ID_GET_VARIFY_CODE, Modules::REGISTERMOD);
 
 
