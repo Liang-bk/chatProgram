@@ -1,9 +1,7 @@
 build/
 client/build
-client/chat.pro.*
 server/.idea
-server/cmake-build*
-verify_server/node_modules
+server/cmake-build-debug
 *.exe
 *.ilk
 *pdb
