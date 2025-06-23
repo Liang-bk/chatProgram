@@ -26,6 +26,8 @@ add_executable(server
         header/verify_grpc_client.h
         source/config.cpp
         header/config.h
+        source/asio_iocontext_pool.cpp
+        header/asio_iocontext_pool.h
 )
 
 # target_link_libraries(server ${Boost_LIBRARIES})

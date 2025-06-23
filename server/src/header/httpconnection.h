@@ -9,10 +9,11 @@
 
 class HttpConnection : public std::enable_shared_from_this<HttpConnection>
 {
-public:
     friend class LogicSystem;
-    HttpConnection(tcp::socket socket);
+public:
+    HttpConnection(boost::asio::io_context& io_context);
     void start();
+    tcp::socket& getSocket();
 private:
     void checkDeadLine();
     void writeResponse();

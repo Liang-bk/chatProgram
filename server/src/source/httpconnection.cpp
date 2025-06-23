@@ -62,13 +62,14 @@ std::string urlDecode(const std::string& str) {
     }
     return decoded;
 }
-HttpConnection::HttpConnection(tcp::socket socket)
-    : socket_(std::move(socket)) {
+HttpConnection::HttpConnection(boost::asio::io_context& io_context)
+    : socket_(io_context) {
 
 }
 
 void HttpConnection::start() {
     auto self = shared_from_this();
+    // 注册读请求
     http::async_read(socket_, buffer_, request_, [self](beast::error_code ec, std::size_t bytes_transferred) {
         try {
             if (ec) {
@@ -86,6 +87,11 @@ void HttpConnection::start() {
         }
     });
 }
+
+tcp::socket& HttpConnection::getSocket() {
+    return socket_;
+}
+
 void HttpConnection::checkDeadLine() {
     auto self = shared_from_this();
     deadline_.async_wait([self](beast::error_code ec) {

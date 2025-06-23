@@ -8,7 +8,7 @@ set(JSONCPP_SRC
 
 
 # boost
-set(BOOST_ROOT "D:/MinGW/boost1_88_0")
+set(BOOST_ROOT "D:/MinGW/boost_compile")
 set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
 set(Boost_NO_SYSTEM_PATHS ON)
