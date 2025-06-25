@@ -35,7 +35,9 @@ add_executable(server
 target_link_directories(server PRIVATE
         ${BOOST_LIB_DIR}
         ${GRPC_LIB_DIR}
+        ${REDIS_LIB_DIR}
 )
 target_link_libraries(server PRIVATE
         ${GRPC_LIB_NAME}
+        ${REDIS_LIB_NAME}
 )

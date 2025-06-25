@@ -138,3 +138,13 @@ set(GRPC_LIB_NAME
         absl_statusor
         re2
 )
+
+# redis-windows
+set(REDIS_ROOT "D:/MinGW/redis_compile")
+include_directories(${REDIS_ROOT}/deps/hiredis)
+
+set(REDIS_LIB_DIR ${REDIS_ROOT}/lib)
+set(REDIS_LIB_NAME
+        hiredis
+        Win32_Interop
+)
