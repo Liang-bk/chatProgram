@@ -28,6 +28,8 @@ add_executable(server
         header/config.h
         source/asio_iocontext_pool.cpp
         header/asio_iocontext_pool.h
+        source/redis_manager.cpp
+        header/redis_manager.h
 )
 
 # target_link_libraries(server ${Boost_LIBRARIES})

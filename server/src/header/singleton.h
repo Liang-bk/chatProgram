@@ -38,14 +38,13 @@ public:
             instance_ = std::shared_ptr<T>(new T);
             });
         return instance_;
+    }
+    // 更简单的写法: (instance_就无用了)
+    // static T& getInstance() {
+    //     static T instance;
+    //     return instance;
+    // }
 
-    }
-    /* 更简单的写法: (instance_就无用了)
-    static T& getInstance() {
-        static T instance;
-        return instance;
-    }
-    */
     void printAddress() {
         std::cout << instance_.get() << std::endl;
     }

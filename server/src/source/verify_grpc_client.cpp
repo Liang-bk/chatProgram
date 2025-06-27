@@ -16,12 +16,7 @@ RPCPool::RPCPool(std::size_t pool_size, std::string host, std::string port) :
 }
 
 RPCPool::~RPCPool() {
-    std::lock_guard<std::mutex> lock(mutex_);
     close();
-    // 析构应该会自动释放queue_, 理论上下面这段并不是必须的
-    while (!queue_.empty()) {
-        queue_.pop();
-    }
 }
 
 std::unique_ptr<VerifyService::Stub> RPCPool::getOneConn() {
@@ -51,7 +46,15 @@ void RPCPool::returnOneConn(std::unique_ptr<VerifyService::Stub> stub) {
 }
 
 void RPCPool::close() {
-    stop_ = true;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        stop_ = true;
+        // 析构应该会自动释放queue_, 理论上下面这段并不是必须的
+        // while (!queue_.empty()) {
+        //     auto conn = std::move(queue_.front());
+        //     queue_.pop();
+        // }
+    }
     cond_.notify_all();
 }
 
@@ -63,9 +66,12 @@ VerifyGrpcClient::VerifyGrpcClient() {
 }
 
 VerifyGrpcClient::~VerifyGrpcClient() {
-
+    // close();
 }
 
+void VerifyGrpcClient::close() {
+    rpc_pool_->close();
+}
 
 GetVerifyResponse VerifyGrpcClient::GetVerifyCode(std::string email) {
     ClientContext context;

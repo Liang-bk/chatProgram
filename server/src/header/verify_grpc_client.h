@@ -42,6 +42,7 @@ class VerifyGrpcClient : public Singleton<VerifyGrpcClient> {
 public:
     ~VerifyGrpcClient();
     GetVerifyResponse GetVerifyCode(std::string email);
+    void close();
 private:
     VerifyGrpcClient();
     std::unique_ptr<RPCPool> rpc_pool_;
