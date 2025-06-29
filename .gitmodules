@@ -1,0 +1,6 @@
+[submodule "server/third_party/hiredis"]
+	path = server/third_party/hiredis
+	url = https://github.com/redis/hiredis
+[submodule "server/third_party/redis-plus-plus"]
+	path = server/third_party/redis-plus-plus
+	url = https://github.com/sewenew/redis-plus-plus

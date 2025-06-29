@@ -1,10 +1,16 @@
 # jsoncpp
-include_directories(${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/include)
-set(JSONCPP_SRC
-        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_reader.cpp
-        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_value.cpp
-        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_writer.cpp
+include(FetchContent)
+FetchContent_Declare(
+        jsoncpp
+        SOURCE_DIR ${PROJECT_SOURCE_DIR}/third_party/jsoncpp-1.9.6
 )
+FetchContent_MakeAvailable(jsoncpp)
+#include_directories(${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/include)
+#set(JSONCPP_SRC
+#        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_reader.cpp
+#        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_value.cpp
+#        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_writer.cpp
+#)
 
 
 # boost
@@ -140,11 +146,41 @@ set(GRPC_LIB_NAME
 )
 
 # redis-windows
-set(REDIS_ROOT "D:/MinGW/redis_compile")
-include_directories(${REDIS_ROOT}/deps/hiredis)
+#set(REDIS_ROOT "D:/MinGW/redis_compile")
+#include_directories(${REDIS_ROOT}/deps/hiredis)
+#
+#set(REDIS_LIB_DIR ${REDIS_ROOT}/lib)
+#set(REDIS_LIB_NAME
+#        hiredis
+#        Win32_Interop
+#)
 
-set(REDIS_LIB_DIR ${REDIS_ROOT}/lib)
-set(REDIS_LIB_NAME
+# Download Hiredis, upon which Redis Plus Plus depends.
+FetchContent_Declare(
         hiredis
-        Win32_Interop
+        SOURCE_DIR     ${PROJECT_SOURCE_DIR}/third_party/hiredis
 )
+#set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)  # 动态库模式
+FetchContent_MakeAvailable(hiredis)
+
+# Download the Redis binding.
+FetchContent_Declare(
+        redis_plus_plus
+        SOURCE_DIR      ${PROJECT_SOURCE_DIR}/third_party/redis-plus-plus
+)
+
+# Pre-fill the include and library paths so that Redis++ does not search for them.
+set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH};${hiredis_SOURCE_DIR}")
+set(hiredis_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/third_party")
+set(HIREDIS_HEADER "${PROJECT_SOURCE_DIR}/third_party")
+set(TEST_HIREDIS_LIB "${hiredis_BINARY_DIR}/hiredisd.lib")
+set(HIREDIS_LIB "${hiredis_BINARY_DIR}/hiredisd.lib")
+
+#set(REDIS_PLUS_PLUS_BUILD_TEST OFF CACHE BOOL "" FORCE)
+#set(REDIS_PLUS_PLUS_BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)  # 启用动态库构建
+#set(REDIS_PLUS_PLUS_CXX_STANDARD 17 CACHE STRING "")
+FetchContent_MakeAvailable(redis_plus_plus)
+
+
+
+

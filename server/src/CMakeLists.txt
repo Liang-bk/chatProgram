@@ -3,12 +3,11 @@ project(server)
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include(${CMAKE_SOURCE_DIR}/cmake/third_party.cmake)
-
+# include(jsoncpp)
 
 
 add_executable(server
-        ${JSONCPP_SRC}
+        # ${JSONCPP_SRC}
         main.cpp
         header/constant.h
         header/cserver.h
@@ -33,13 +32,21 @@ add_executable(server
 )
 
 # target_link_libraries(server ${Boost_LIBRARIES})
-
+target_compile_definitions(server PRIVATE JSON_DLL) # 正确链接动态库
+target_include_directories(server PRIVATE
+        ${redis_plus_plus_SOURCE_DIR}/src
+)
 target_link_directories(server PRIVATE
         ${BOOST_LIB_DIR}
         ${GRPC_LIB_DIR}
-        ${REDIS_LIB_DIR}
+        # ${REDIS_LIB_DIR}
 )
 target_link_libraries(server PRIVATE
         ${GRPC_LIB_NAME}
-        ${REDIS_LIB_NAME}
+        # ${REDIS_LIB_NAME}
+        jsoncpp_lib
+
+        redis++::redis++
+        hiredis::hiredis
+
 )
