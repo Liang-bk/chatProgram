@@ -1,19 +1,15 @@
 # jsoncpp
+message("-- Loading jsoncpp...")
 include(FetchContent)
 FetchContent_Declare(
         jsoncpp
-        SOURCE_DIR ${PROJECT_SOURCE_DIR}/third_party/jsoncpp-1.9.6
+        SOURCE_DIR ${PROJECT_SOURCE_DIR}/third_party/jsoncpp
 )
 FetchContent_MakeAvailable(jsoncpp)
-#include_directories(${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/include)
-#set(JSONCPP_SRC
-#        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_reader.cpp
-#        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_value.cpp
-#        ${CMAKE_SOURCE_DIR}/third_party/jsoncpp-1.9.6/src/lib_json/json_writer.cpp
-#)
-
+message("-- jsoncpp include dir: " "${jsoncpp_SOURCE_DIR}")
 
 # boost
+message("-- Loading boost...")
 set(BOOST_ROOT "D:/MinGW/boost_compile")
 set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include")
 set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
@@ -29,7 +25,7 @@ if(Boost_FOUND)
     message(STATUS "Boost version: ${Boost_VERSION}")
     message(STATUS "Original Boost include dirs: ${Boost_INCLUDE_DIRS}")
     message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
-    message(STATUS "Boost library dirs: ${Boost_LIBRARY_DIRS}")
+    message(STATUS "Boost library dirs: ${Boost_LIBRARY_DIR}")
 
     # 验证路径是否存在
     if(EXISTS "${Boost_INCLUDE_DIRS}")
@@ -48,7 +44,9 @@ if(Boost_FOUND)
 endif()
 
 # grpc
+message("-- Loading grpc...")
 set(GRPC_ROOT "D:/MinGW/grpc")
+message("-- grpc include dir: " "${GRPC_ROOT}/include")
 include_directories(${GRPC_ROOT}/third_party/re2)
 include_directories(${GRPC_ROOT}/third_party/address_sorting/include)
 include_directories(${GRPC_ROOT}/third_party/abseil-cpp)
@@ -145,42 +143,38 @@ set(GRPC_LIB_NAME
         re2
 )
 
-# redis-windows
-#set(REDIS_ROOT "D:/MinGW/redis_compile")
-#include_directories(${REDIS_ROOT}/deps/hiredis)
-#
-#set(REDIS_LIB_DIR ${REDIS_ROOT}/lib)
-#set(REDIS_LIB_NAME
-#        hiredis
-#        Win32_Interop
-#)
-
-# Download Hiredis, upon which Redis Plus Plus depends.
+# The following redis project will be loaded as dynamic libraries
+# Download Hiredis, upon which Redis Plus Plus depends and use local dir.
+message("-- Loading hiredis...")
 FetchContent_Declare(
         hiredis
         SOURCE_DIR     ${PROJECT_SOURCE_DIR}/third_party/hiredis
 )
-#set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)  # 动态库模式
+message("-- hiredis include dir: " "${hiredis_SOURCE_DIR}")
 FetchContent_MakeAvailable(hiredis)
 
 # Download the Redis binding.
+message("-- Loading redis++")
 FetchContent_Declare(
         redis_plus_plus
         SOURCE_DIR      ${PROJECT_SOURCE_DIR}/third_party/redis-plus-plus
 )
-
+message("-- redis++ include dir: " "${redis++_SOURCE_DIR}")
 # Pre-fill the include and library paths so that Redis++ does not search for them.
 set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH};${hiredis_SOURCE_DIR}")
 set(hiredis_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/third_party")
 set(HIREDIS_HEADER "${PROJECT_SOURCE_DIR}/third_party")
-set(TEST_HIREDIS_LIB "${hiredis_BINARY_DIR}/hiredisd.lib")
-set(HIREDIS_LIB "${hiredis_BINARY_DIR}/hiredisd.lib")
+set(TEST_HIREDIS_LIB "${CMAKE_BINARY_DIR}/bin/hiredisd.lib")
+set(HIREDIS_LIB "${CMAKE_BINARY_DIR}/bin/hiredisd.lib")
 
-#set(REDIS_PLUS_PLUS_BUILD_TEST OFF CACHE BOOL "" FORCE)
-#set(REDIS_PLUS_PLUS_BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)  # 启用动态库构建
-#set(REDIS_PLUS_PLUS_CXX_STANDARD 17 CACHE STRING "")
 FetchContent_MakeAvailable(redis_plus_plus)
 
-
-
+# gtest
+message("-- Loading GoogleTest...")
+FetchContent_Declare(
+        googletest
+        SOURCE_DIR     ${PROJECT_SOURCE_DIR}/third_party/googletest
+)
+message("-- GoogleTest include dir: " "${gtest_SOURCE_DIR}")
+FetchContent_MakeAvailable(googletest)
 

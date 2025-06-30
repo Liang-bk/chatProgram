@@ -1,6 +1,12 @@
 [submodule "server/third_party/hiredis"]
 	path = server/third_party/hiredis
-	url = https://github.com/redis/hiredis
+	url = https://github.com/redis/hiredis.git
 [submodule "server/third_party/redis-plus-plus"]
 	path = server/third_party/redis-plus-plus
-	url = https://github.com/sewenew/redis-plus-plus
+	url = https://github.com/sewenew/redis-plus-plus.git
+[submodule "server/third_party/googletest"]
+	path = server/third_party/googletest
+	url = https://github.com/google/googletest.git
+[submodule "server/third_party/jsoncpp"]
+	path = server/third_party/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git

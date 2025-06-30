@@ -4,12 +4,12 @@
 #include <json/reader.h>
 #include "header/cserver.h"
 #include <cctype>
+#include <sw/redis++/redis.h>
+#include <sw/redis++/connection_pool.h>
 #include "header/constant.h"
 #include "header/config.h"
-#include "hiredis.h"
 
 int main() {
-
     auto gateserver_config = Config::getInstance()->getValue("GateServer");
     std::string gate_port_str = gateserver_config["Port"].asString();
     unsigned short gate_port = atoi(gate_port_str.c_str());
