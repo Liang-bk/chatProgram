@@ -142,7 +142,6 @@ set(GRPC_LIB_NAME
         absl_statusor
         re2
 )
-
 # The following redis project will be loaded as dynamic libraries
 # Download Hiredis, upon which Redis Plus Plus depends and use local dir.
 message("-- Loading hiredis...")
@@ -168,7 +167,7 @@ set(TEST_HIREDIS_LIB "${CMAKE_BINARY_DIR}/bin/hiredisd.lib")
 set(HIREDIS_LIB "${CMAKE_BINARY_DIR}/bin/hiredisd.lib")
 
 FetchContent_MakeAvailable(redis_plus_plus)
-
+include_directories(${redis_plus_plus_SOURCE_DIR}/src)
 # gtest
 message("-- Loading GoogleTest...")
 FetchContent_Declare(
@@ -178,3 +177,15 @@ FetchContent_Declare(
 message("-- GoogleTest include dir: " "${gtest_SOURCE_DIR}")
 FetchContent_MakeAvailable(googletest)
 
+# mysql-connector
+message("-- Loading mysql-connector...")
+set(Mysql_connector_ROOT "D:/MinGW/mysql-connector")
+set(Mysql_connector_INCLUDE_DIRS "${Mysql_connector_ROOT}/include")
+set(Mysql_connector_LIB_DIRS "${Mysql_connector_ROOT}/lib64/debug/vs14")
+set(Mysql_connector_LIB_NAME
+        mysqlcppconn
+        mysqlcppconnx
+)
+include_directories(${Mysql_connector_INCLUDE_DIRS})
+
+message("-- mysql-connector include dir: " "${Mysql_connector_INCLUDE_DIRS}")

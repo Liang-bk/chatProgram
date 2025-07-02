@@ -16,7 +16,8 @@ public:
     ~RegisterDialog();
 
 private slots:
-    void on_get_code_clicked();
+    void on_get_code_clicked(); // 点击获取按钮的后续操作
+    void on_confirm_btn_clicked(); // 点击确认按钮的后续操作
     void slotRegisterModFinish(ReqId id, QString res, ErrorCodes err);
 
 private:

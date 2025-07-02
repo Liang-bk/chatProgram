@@ -3,14 +3,36 @@ const message_proto = require('./proto')
 const const_module = require('./const')
 const { v4: uuidv4 } = require('uuid')
 const emailModule = require('./email')
-
+const redis_module = require('./redis')
 
 async function GetVerifyCode(call, callback) {
     console.log("email is ", call.request.email)
     try {
-        uniqueId = uuidv4();
-        console.log("uniqueId is ", uniqueId)
-        let text_str = '您的验证码为' + uniqueId + '请三分钟内完成注册'
+        // 获取验证码之前首先查询redis中有没有缓存
+        let vCode = await redis_module.RedisGet(const_module.code_prefix + call.request.email);
+        let uniqueId = vCode;
+        if (vCode == null) {
+            uniqueId = uuidv4();
+            if (uniqueId.length > 6) {
+                uniqueId = uniqueId.substring(0, 6);
+            }
+            // 设置缓存120秒
+            let setFlag = await redis_module.RedisSetWithTime(
+                const_module.code_prefix + call.request.email, 
+                uniqueId,
+                600
+            )
+            // 设置失败
+            if (!setFlag) {
+                callback(null, {
+                    email: call.request.email,
+                    error: const_module.Errors.REDISERR
+                });
+                return;
+            }
+        }
+        console.log("Verify code for ", call.request.email, " is ", uniqueId);
+        let text_str = '您的验证码为' + uniqueId + '请2分钟内完成注册'
         //发送邮件
         let mailOptions = {
             from: 'xquank@163.com',

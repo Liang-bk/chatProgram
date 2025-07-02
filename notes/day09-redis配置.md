@@ -449,85 +449,69 @@ npm下载redis客户端：
 
 ```js
 const config_module = require('./config')
-const Redis = require("ioredis");
-// 创建Redis客户端实例
+const Redis = require("ioredis")
+
+// 创建redis客户端
 const RedisCli = new Redis({
-  host: config_module.redis_host,       // Redis服务器主机名
-  port: config_module.redis_port,        // Redis服务器端口号
-  password: config_module.redis_passwd, // Redis密码
+    host: config_module.redis_host, // Redis server host
+    port: config_module.redis_port, // Redis server port
+    password: config_module.redis_passwd,
 });
-/**
- * 监听错误信息
- */
-RedisCli.on("error", function (err) {
-  console.log("RedisCli connect error");
-  RedisCli.quit();
+
+// 监听错误信息, 比如connect error
+RedisCli.on("error", function(err) {
+    console.log("Redis client connect error!");
+    RedisCli.quit();
 });
-/**
- * 根据key获取value
- * @param {*} key 
- * @returns 
- */
-async function GetRedis(key) {
+
+// redis get
+async function RedisGet(key) {
     try{
-        const result = await RedisCli.get(key)
-        if(result === null){
-          console.log('result:','<'+result+'>', 'This key cannot be find...')
-          return null
+        const result = await RedisCli.get(key);
+        if (result === null) {
+            console.log("Redis-cli: try to get <", key, "> from Redis, but not found");
+            return null;
         }
-        console.log('Result:','<'+result+'>','Get key success!...');
-        return result
-    }catch(error){
-        console.log('GetRedis error is', error);
-        return null
+        console.log("Redis-cli: get <", key, "> success, value is ", result);
+        return result;
+    } catch(error) {
+        console.log("Redis-cli get error: ", error);
+        return null;
     }
-  }
-/**
- * 根据key查询redis中是否存在key
- * @param {*} key 
- * @returns 
- */
-async function QueryRedis(key) {
+}
+// redis exists
+async function RedisExists(key) {
     try{
-        const result = await RedisCli.exists(key)
-        //  判断该值是否为空 如果为空返回null
+        const result = await RedisCli.exists(key);
         if (result === 0) {
-          console.log('result:<','<'+result+'>','This key is null...');
-          return null
+            console.log("Redis-cli: ", key, "is not exist");
+            return null;
         }
-        console.log('Result:','<'+result+'>','With this value!...');
-        return result
-    }catch(error){
-        console.log('QueryRedis error is', error);
-        return null
+        console.log("Redis-cli: <", key, "> exists");
+        return result;
+    } catch(error) {
+        console.log("Redis-cli exists error: ", error);
+        return null;
     }
-  }
-/**
- * 设置key和value，并过期时间
- * @param {*} key 
- * @param {*} value 
- * @param {*} exptime 
- * @returns 
- */
-async function SetRedisExpire(key,value, exptime){
+}
+// redis set
+async function RedisSetWithTime(key, value, expireTime) {
     try{
-        // 设置键和值
-        await RedisCli.set(key,value)
-        // 设置过期时间（以秒为单位）
-        await RedisCli.expire(key, exptime);
+        await RedisCli.set(key, value);
+        await RedisCli.expire(key, expireTime);
+        console.log("Redis-cli: set <", key, "> success, timer has ", expireTime, " left");
         return true;
-    }catch(error){
-        console.log('SetRedisExpire error is', error);
+    } catch(error) {
+        console.log("Redis-cli set error: ", error);
         return false;
     }
 }
-/**
- * 退出函数
- */
-function Quit(){
+
+function Quit() {
     RedisCli.quit();
 }
-module.exports = {GetRedis, QueryRedis, Quit, SetRedisExpire,}
+
+module.exports = {RedisGet, RedisExists, RedisSetWithTime, Quit}
 ```
 
 ### 更新server.js
@@ -537,46 +521,53 @@ module.exports = {GetRedis, QueryRedis, Quit, SetRedisExpire,}
 const redis_module = require('./redis')
 
 // 修改GetVerifyCode
-async function GetVarifyCode(call, callback) {
+async function GetVerifyCode(call, callback) {
     console.log("email is ", call.request.email)
-    try{
-        let query_res = await redis_module.GetRedis(const_module.code_prefix+call.request.email);
-        console.log("query_res is ", query_res)
-        if(query_res == null){
-        }
-        let uniqueId = query_res;
-        if(query_res ==null){
+    try {
+        // 获取验证码之前首先查询redis中有没有缓存
+        let vCode = await redis_module.RedisGet(const_module.code_prefix + call.request.email);
+        let uniqueId = vCode;
+        if (vCode == null) {
             uniqueId = uuidv4();
-            if (uniqueId.length > 4) {
-                uniqueId = uniqueId.substring(0, 4);
-            } 
-            let bres = await redis_module.SetRedisExpire(const_module.code_prefix+call.request.email, uniqueId,600)
-            if(!bres){
-                callback(null, { email:  call.request.email,
-                    error:const_module.Errors.RedisErr
+            if (uniqueId.length > 6) {
+                uniqueId = uniqueId.substring(0, 6);
+            }
+            // 设置缓存120秒
+            let setFlag = await redis_module.RedisSetWithTime(
+                const_module.code_prefix + call.request.email, 
+                uniqueId,
+                120
+            )
+            // 设置失败
+            if (!setFlag) {
+                callback(null, {
+                    email: call.request.email,
+                    error: const_module.Errors.REDISERR
                 });
                 return;
             }
         }
-        console.log("uniqueId is ", uniqueId)
-        let text_str =  '您的验证码为'+ uniqueId +'请三分钟内完成注册'
+        console.log("Verify code for ", call.request.email, " is ", uniqueId);
+        let text_str = '您的验证码为' + uniqueId + '请2分钟内完成注册'
         //发送邮件
         let mailOptions = {
-            from: 'secondtonone1@163.com',
+            from: 'xquank@163.com',
             to: call.request.email,
             subject: '验证码',
             text: text_str,
         };
         let send_res = await emailModule.SendMail(mailOptions);
         console.log("send res is ", send_res)
-        callback(null, { email:  call.request.email,
-            error:const_module.Errors.Success
-        }); 
-    }catch(error){
+        callback(null, {
+            email: call.request.email,
+            error: const_module.Errors.Success
+        });
+    } catch (error) {
         console.log("catch error is ", error)
-        callback(null, { email:  call.request.email,
-            error:const_module.Errors.Exception
-        }); 
+        callback(null, {
+            email: call.request.email,
+            error: const_module.Errors.Exception
+        });
     }
 }
 ```

@@ -26,20 +26,27 @@ add_executable(server
         header/asio_iocontext_pool.h
         source/redis_manager.cpp
         header/redis_manager.h
+        source/mysql_dao.cpp
+        header/mysql_dao.h
+        header/defer.h
+        source/mysql_manager.cpp
+        header/mysql_manager.h
 )
 
 # target_link_libraries(server ${Boost_LIBRARIES})
 target_compile_definitions(server PRIVATE JSON_DLL) # 正确链接jsoncpp_lib
-target_include_directories(server PRIVATE
-        ${redis_plus_plus_SOURCE_DIR}/src
-)
+#target_include_directories(server PRIVATE
+#        ${redis_plus_plus_SOURCE_DIR}/src
+#)
 target_link_directories(server PRIVATE
         ${BOOST_LIB_DIR}
         ${GRPC_LIB_DIR}
+        ${Mysql_connector_LIB_DIRS}
 
 )
 target_link_libraries(server PRIVATE
         ${GRPC_LIB_NAME}
+        ${Mysql_connector_LIB_NAME}
         jsoncpp_lib
         hiredis::hiredis
         redis++::redis++

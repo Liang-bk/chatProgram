@@ -11,5 +11,12 @@
     "Host": "127.0.0.1",
     "Port": 6379,
     "Pass": "123456"
+  },
+  "MySQL": {
+    "Host": "127.0.0.1",
+    "Port": 3306,
+    "User": "root",
+    "Pass": "123456",
+    "Schema": "chat_project"
   }
 }
