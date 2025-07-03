@@ -2,8 +2,8 @@
 // If you make any local change, they will be lost.
 // source: message.proto
 
-#include "header/message.pb.h"
-#include "header/message.grpc.pb.h"
+#include "message.pb.h"
+#include "message.grpc.pb.h"
 
 #include <functional>
 #include <grpcpp/impl/codegen/async_stream.h>

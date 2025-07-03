@@ -9,8 +9,8 @@
 #include <queue>
 #include <grpcpp/grpcpp.h>
 #include "message.grpc.pb.h"
-#include "constant.h"
-#include "singleton.h"
+#include "common/constant.h"
+#include "common/singleton.h"
 
 using grpc::Channel;
 using grpc::Status;
@@ -22,7 +22,7 @@ using message::VerifyService;
 
 class RPCPool {
 public:
-    RPCPool(std::size_t pool_size, std::string host, std::string port);
+    RPCPool(const std::string &host, int port, std::size_t pool_size);
     ~RPCPool();
     std::unique_ptr<VerifyService::Stub> getOneConn();
     void returnOneConn(std::unique_ptr<VerifyService::Stub> stub);
@@ -31,7 +31,7 @@ private:
     std::atomic<bool> stop_;
     std::size_t pool_size_;
     std::string remote_host_;
-    std::string remote_port_;
+    int remote_port_;
     std::mutex mutex_;
     std::condition_variable cond_;
     std::queue<std::unique_ptr<VerifyService::Stub>> queue_;
@@ -42,10 +42,12 @@ class VerifyGrpcClient : public Singleton<VerifyGrpcClient> {
 public:
     ~VerifyGrpcClient();
     GetVerifyResponse GetVerifyCode(std::string email);
+    void init(const std::string& host, int port, size_t pool_size);
     void close();
 private:
     VerifyGrpcClient();
     std::unique_ptr<RPCPool> rpc_pool_;
+    bool inited_;
 };
 
 

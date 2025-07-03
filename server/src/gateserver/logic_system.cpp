@@ -2,13 +2,17 @@
 // Created by 86183 on 2025/6/5.
 //
 
-#include "header/logic_system.h"
+#include "gateserver/logic_system.h"
 
-#include "header/httpconnection.h"
-#include "header/message.pb.h"
-#include "header/mysql_manager.h"
-#include "header/redis_manager.h"
-#include "header/verify_grpc_client.h"
+#include "gateserver/httpconnection.h"
+
+#include "database/mysql_manager.h"
+#include "database/redis_manager.h"
+#include "rpc/verify_grpc_client.h"
+#include <json/json.h>
+#include <json/value.h>
+#include <json/reader.h>
+
 LogicSystem::LogicSystem() {
     // 127.0.0.1:/get_test
     registerGet("/get_test", [](std::shared_ptr<HttpConnection> connection) {

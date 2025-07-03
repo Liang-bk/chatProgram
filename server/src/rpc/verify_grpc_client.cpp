@@ -2,14 +2,13 @@
 // Created by baikaishui on 2025/6/12.
 //
 
-#include "header/verify_grpc_client.h"
+#include "verify_grpc_client.h"
 
-#include "header/config.h"
 
-RPCPool::RPCPool(std::size_t pool_size, std::string host, std::string port) :
+RPCPool::RPCPool(const std::string &host, int port, std::size_t pool_size) :
     pool_size_(pool_size), remote_host_(host), remote_port_(port), stop_(false) {
     for (std::size_t i = 0; i < pool_size_; i++) {
-        std::shared_ptr<Channel> channel = grpc::CreateChannel(host + ":" + port,
+        std::shared_ptr<Channel> channel = grpc::CreateChannel(host + ":" + std::to_string(port),
             grpc::InsecureChannelCredentials());
         queue_.push(VerifyService::NewStub(channel));
     }
@@ -58,15 +57,14 @@ void RPCPool::close() {
     cond_.notify_all();
 }
 
-VerifyGrpcClient::VerifyGrpcClient() {
-    auto config = Config::getInstance();
-    std::string remote_host = (*config)["VerifyServer"]["Host"].asString();
-    std::string remote_port = (*config)["VerifyServer"]["Port"].asString();
-    rpc_pool_ = std::make_unique<RPCPool>(200, remote_host, remote_port);
+VerifyGrpcClient::VerifyGrpcClient(): inited_(false) {
 }
 
 VerifyGrpcClient::~VerifyGrpcClient() {
     // close();
+}
+void VerifyGrpcClient::init(const std::string &host, int port, size_t pool_size) {
+    rpc_pool_ = std::make_unique<RPCPool>(host, port, pool_size);
 }
 
 void VerifyGrpcClient::close() {

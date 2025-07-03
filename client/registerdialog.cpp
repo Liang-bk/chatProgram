@@ -75,7 +75,7 @@ void RegisterDialog::on_confirm_btn_clicked() {
     json_obj["pass_confirm"] = ui->pass_confirm_edit->text();
     json_obj["verify_code"] = ui->verify_edit->text();
     HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/user_register"),
-                                            json_obj, ReqId::ID_REG_USER, Modules::REGISTERMOD);    
+                                            json_obj, ReqId::ID_REG_USER, Modules::REGISTERMOD);
 }
 
 void RegisterDialog::showTip(QString str, bool b_ok)

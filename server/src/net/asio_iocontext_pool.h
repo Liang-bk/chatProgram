@@ -4,8 +4,8 @@
 
 #ifndef ASIO_IOCONTEXT_POOL_H
 #define ASIO_IOCONTEXT_POOL_H
-#include "singleton.h"
-
+#include <boost/asio/io_context.hpp>
+#include "common/singleton.h"
 
 class AsioIOContextPool : public Singleton<AsioIOContextPool> {
     friend class Singleton<AsioIOContextPool>;

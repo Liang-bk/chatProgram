@@ -5,7 +5,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #pragma once
-#include "header/singleton.h"
+#include <json/value.h>
+#include "common/singleton.h"
+
 
 class Config : public Singleton<Config> {
     friend class Singleton<Config>;

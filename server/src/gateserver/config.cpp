@@ -2,8 +2,10 @@
 // Created by baikaishui on 2025/6/13.
 //
 
-#include "header/config.h"
-
+#include "config.h"
+#include <fstream>
+#include <json/reader.h>
+#include <boost/filesystem.hpp>
 
 Config::Config() {
     boost::filesystem::path current_path = boost::filesystem::current_path();

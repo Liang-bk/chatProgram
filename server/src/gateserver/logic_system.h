@@ -5,7 +5,9 @@
 #ifndef LOGIC_SYSTEM_H
 #define LOGIC_SYSTEM_H
 
-#include "header/constant.h"
+#include <functional>
+#include "common/singleton.h"
+#include "common/constant.h"
 // 前向声明: 解决相互引用
 class HttpConnection;
 using HttpHandler = std::function<void(std::shared_ptr<HttpConnection>)>;

@@ -9,12 +9,8 @@
 // 模拟go的defer功能来实现RAII
 class Defer {
 public:
-    Defer(std::function<void()> func) {
-        defer_func_ = func;
-    }
-    ~Defer() {
-        defer_func_();
-    }
+    Defer(std::function<void()> func);
+    ~Defer();
 private:
     std::function<void()> defer_func_;
 };

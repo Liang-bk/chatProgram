@@ -2,8 +2,8 @@
 // Created by baikaishui on 2025/6/5.
 //
 
-#include "header/httpconnection.h"
-#include "header/logic_system.h"
+#include "gateserver/httpconnection.h"
+#include "gateserver/logic_system.h"
 // 10转16
 unsigned char DecToHex(unsigned char x) {
     return x > 9 ? x + 55 : x + 48;

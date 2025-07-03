@@ -4,50 +4,9 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(${CMAKE_SOURCE_DIR}/src) # 包含src目录
 
-add_executable(server
-        main.cpp
-        header/constant.h
-        header/cserver.h
-        header/httpconnection.h
-        header/singleton.h
-        header/logic_system.h
-        header/message.pb.h
-        header/message.grpc.pb.h
-        source/cserver.cpp
-        source/httpconnection.cpp
-        source/logic_system.cpp
-        source/message.pb.cc
-        source/message.grpc.pb.cc
-        source/verify_grpc_client.cpp
-        header/verify_grpc_client.h
-        source/config.cpp
-        header/config.h
-        source/asio_iocontext_pool.cpp
-        header/asio_iocontext_pool.h
-        source/redis_manager.cpp
-        header/redis_manager.h
-        source/mysql_dao.cpp
-        header/mysql_dao.h
-        header/defer.h
-        source/mysql_manager.cpp
-        header/mysql_manager.h
-)
-
-# target_link_libraries(server ${Boost_LIBRARIES})
-target_compile_definitions(server PRIVATE JSON_DLL) # 正确链接jsoncpp_lib
-#target_include_directories(server PRIVATE
-#        ${redis_plus_plus_SOURCE_DIR}/src
-#)
-target_link_directories(server PRIVATE
-        ${BOOST_LIB_DIR}
-        ${GRPC_LIB_DIR}
-        ${Mysql_connector_LIB_DIRS}
-
-)
-target_link_libraries(server PRIVATE
-        ${GRPC_LIB_NAME}
-        ${Mysql_connector_LIB_NAME}
-        jsoncpp_lib
-        hiredis::hiredis
-        redis++::redis++
-)
+add_subdirectory(common)
+add_subdirectory(database)
+add_subdirectory(gateserver)
+add_subdirectory(net)
+add_subdirectory(rpc)
+add_subdirectory(utils)

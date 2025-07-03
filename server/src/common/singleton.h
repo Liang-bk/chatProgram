@@ -7,7 +7,7 @@
 #include <memory>
 #include <mutex>
 #include <iostream>
-#include "header/constant.h"
+#include "common/constant.h"
 /******************************************************************************
  *
  * @file       singleton.h
@@ -48,11 +48,12 @@ public:
     void printAddress() {
         std::cout << instance_.get() << std::endl;
     }
-    ~Singleton() {
+    virtual ~Singleton() {
         std::cout << "This is Singleton destruction." << std::endl;
     }
 
 };
+
 // 类内static变量初始化
 template<typename T>
 std::shared_ptr<T> Singleton<T>::instance_ = nullptr;

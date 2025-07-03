@@ -5,21 +5,24 @@
 #ifndef REDIS_MANAGER_H
 #define REDIS_MANAGER_H
 
-#include <hiredis.h>
+#include <hiredis/hiredis.h>
 #include <queue>
-#include <sw/redis++/redis.h>
+#include <redis-plus-plus/src/sw/redis++/redis.h>
 
-#include "singleton.h"
+#include "common/singleton.h"
 
 class RedisManager : public Singleton<RedisManager> {
     friend class Singleton<RedisManager>;
 
 public:
     ~RedisManager();
+    void init(const std::string &host, const int port, const std::string &pass,
+        const size_t pool_size, const std::chrono::milliseconds& wait_time);
     sw::redis::Redis& getRedis();
 private:
     RedisManager();
     std::unique_ptr<sw::redis::Redis> redis_conn;
+    bool inited_;
 };
 
 
