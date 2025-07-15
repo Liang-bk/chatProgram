@@ -21,7 +21,7 @@ extern QString gate_server_prefix;
  * 要实现的请求功能
  */
 enum ReqId {
-    ID_GET_VARIFY_CODE = 1001, // 获取验证码
+    ID_GET_VERIFY_CODE = 1001, // 获取验证码
     ID_REG_USER = 1002,         // 用户注册
 };
 /**

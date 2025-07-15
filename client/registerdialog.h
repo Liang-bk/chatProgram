@@ -14,15 +14,19 @@ class RegisterDialog : public QDialog
 public:
     explicit RegisterDialog(QWidget *parent = nullptr);
     ~RegisterDialog();
-
+    void loadStyleSheet(const QString& file_path);
+signals:
+    void switchLogin();
 private slots:
-    void on_get_code_clicked(); // 点击获取按钮的后续操作
-    void on_confirm_btn_clicked(); // 点击确认按钮的后续操作
+    void handleRequestCode(); // 点击获取按钮的后续操作
+    void handleRequestRegistration(); // 点击确认按钮的后续操作
     void slotRegisterModFinish(ReqId id, QString res, ErrorCodes err);
 
 private:
+    void setupUI();
     void initHttpHandlers();
-    void showTip(QString str, bool b_ok);
+    // void showTip(QString str, bool b_ok);
+    void showTipMessageBox(const QString& title, const QString& text, int timeout = 5000);
 
     QMap<ReqId, std::function<void(const QJsonObject&)>> handlers_;
     Ui::RegisterDialog *ui;

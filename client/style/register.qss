@@ -1,0 +1,68 @@
+QDialog#RegisterDialog QLabel#welcom_label {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333;
+}
+
+QDialog#RegisterDialog QLineEdit {
+    border: none;
+    background-color: transparent;
+    padding: 0 12px;
+    font-size: 14px;
+}
+
+QDialog#RegisterDialog QLineEdit:focus {
+    outline: none;
+}
+
+QDialog#RegisterDialog ValidatedLineEdit {
+    border: none
+}
+
+QDialog#RegisterDialog ValidatedLineEdit QFrame {
+    background-color: white;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #333333;
+}
+
+QDialog#RegisterDialog ValidatedLineEdit QLabel {
+    color: #FF5252;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+    padding-left: 6px;
+}
+
+QDialog#RegisterDialog PasswordLineEdit QToolButton {
+    border: none;
+    background-color: transparent;
+    padding-right: 4px;
+    font-size: 10px;
+}
+
+QDialog#RegisterDialog VerificationCodeEdit QPushButton {
+    border: none;
+    background-color: transparent;
+    padding-right: 8px;
+    font-size: 14px;
+    color: rgb(30, 137, 239);
+}
+/* 注册按钮 */
+QDialog#RegisterDialog #register_btn, #cancel_btn {
+    min-height: 35px;
+    background-color: rgb(0, 156, 255);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+}
+
+QDialog#RegisterDialog #register_btn:hover, #cancel_btn:hover {
+    background-color: #33AAFF;
+}
+
+QDialog#RegisterDialog #register_btn:pressed, #cancel_btn:pressed {
+    background-color: #0088EE;
+}

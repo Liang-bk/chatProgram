@@ -17,8 +17,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void loadStyleSheet(const QString& file_path);
 public slots:
-    void slotSwitchRegister();
+    void handleSwitchRegister();
+    void handleSwitchLogin();
 private:
     Ui::MainWindow *ui;
     LoginDialog *login_dlg_;

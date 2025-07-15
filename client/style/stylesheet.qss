@@ -1,5 +1,9 @@
+#MainWindow {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,
+                                      stop: 0 #FDEFF9, stop: 1 #E6F7FF);
+}
 QDialog#LoginDialog, #RegisterDialog{
-    background-color:rgb(255, 255, 255)
+    background-color:transparent
 }
 
 #user_label, pass_label{

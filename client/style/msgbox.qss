@@ -1,0 +1,38 @@
+QMessageBox#AutoClosingMsgBox {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    border: 1px solid #E0E0E0;
+    font-family: "Microsoft YaHei", sans-serif;
+}
+
+QMessageBox#AutoClosingMsgBox QLabel#qt_msgbox_label {
+    color: #333333;
+    font-size: 16px;
+    min-width: 280px; /* 防止窗口过窄 */
+    padding: 10px;
+}
+
+QMessageBox#AutoClosingMsgBox QLabel#qt_msgbox_icon_label {
+    padding: 15px;
+}
+
+QMessageBox#AutoClosingMsgBox QPushButton {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 90px;
+}
+
+QMessageBox#AutoClosingMsgBox QPushButton:hover {
+    background-color: #0069D9;
+}
+
+QMessageBox#AutoClosingMsgBox QPushButton:pressed {
+    background-color: #0056B3;
+    padding-top: 10px; /* 简单的点击下沉效果 */
+    padding-bottom: 6px;
+}

@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>res/telegram_icon.ico</file>
         <file>style/stylesheet.qss</file>
+        <file>res/check.svg</file>
+        <file>res/view.svg</file>
+        <file>res/view-off.svg</file>
+        <file>style/register.qss</file>
+        <file>style/msgbox.qss</file>
     </qresource>
 </RCC>

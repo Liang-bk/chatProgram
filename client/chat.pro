@@ -15,6 +15,11 @@ SOURCES += \
     logindialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    register_ui/checklineedit.cpp \
+    register_ui/passwordlineedit.cpp \
+    register_ui/validatedlineedit.cpp \
+    register_ui/verificationcodeedit.cpp \
+    register_ui/waitingspinnerwidget.cpp \
     registerdialog.cpp
 
 HEADERS += \
@@ -22,6 +27,11 @@ HEADERS += \
     httpmanager.h \
     logindialog.h \
     mainwindow.h \
+    register_ui/checklineedit.h \
+    register_ui/passwordlineedit.h \
+    register_ui/validatedlineedit.h \
+    register_ui/verificationcodeedit.h \
+    register_ui/waitingspinnerwidget.h \
     registerdialog.h \
     singleton.h
 

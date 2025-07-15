@@ -45,7 +45,7 @@ public:
     void printAddress() {
         std::cout << instance_.get() << std::endl;
     }
-    ~Singleton() {
+    virtual ~Singleton() {
         std::cout << "This is Singleton destruction." << std::endl;
     }
 
