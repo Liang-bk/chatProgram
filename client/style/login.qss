@@ -1,0 +1,42 @@
+QDialog#LoginDialog QLabel#icon {
+    border: none;
+    background-color: transparent;
+}
+
+QDialog#LoginDialog QLineEdit {
+    background-color: white;
+    padding: 0 12px;
+    font-size: 16px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+}
+
+QDialog#LoginDialog QLineEdit:focus {
+    outline: none;
+}
+
+QDialog#LoginDialog #forget_btn, #register_btn {
+    border: none;
+    background-color: transparent;
+    font-size: 14px;
+    color: rgb(30, 137, 239);
+}
+
+/* 登录按钮 */
+QDialog#LoginDialog #login_btn {
+    min-height: 35px;
+    background-color: rgb(0, 156, 255);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+}
+
+QDialog#LoginDialog #login_btn:hover {
+    background-color: #33AAFF;
+}
+
+QDialog#LoginDialog #login_btn:pressed {
+    background-color: #0088EE;
+}

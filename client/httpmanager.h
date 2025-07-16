@@ -41,6 +41,7 @@ private slots:
 signals:
     void sigHttpFinish(ReqId id, QString res, ErrorCodes err, Modules mod);
     void sigRegisterModFinish(ReqId id, QString res, ErrorCodes err);
+    void sigResetModFinish(ReqId id, QString res, ErrorCodes err);
 };
 
 #endif // HTTPMANAGER_H

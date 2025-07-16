@@ -20,7 +20,8 @@ SOURCES += \
     register_ui/validatedlineedit.cpp \
     register_ui/verificationcodeedit.cpp \
     register_ui/waitingspinnerwidget.cpp \
-    registerdialog.cpp
+    registerdialog.cpp \
+    resetdialog.cpp
 
 HEADERS += \
     global.h \
@@ -33,12 +34,14 @@ HEADERS += \
     register_ui/verificationcodeedit.h \
     register_ui/waitingspinnerwidget.h \
     registerdialog.h \
+    resetdialog.h \
     singleton.h
 
 FORMS += \
     logindialog.ui \
     mainwindow.ui \
-    registerdialog.ui
+    registerdialog.ui \
+    resetdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -48,5 +48,7 @@ void HttpManager::slotHttpFinish(ReqId id, QString res, ErrorCodes err, Modules 
     // 注册模块功能处理
     if (mod == Modules::REGISTERMOD) {
         emit sigRegisterModFinish(id, res, err);
+    } else if (mod == Modules::RESETPWDMOD) {
+        emit sigResetModFinish(id, res, err);
     }
 }

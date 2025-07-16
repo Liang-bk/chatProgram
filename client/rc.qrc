@@ -7,5 +7,7 @@
         <file>res/view-off.svg</file>
         <file>style/register.qss</file>
         <file>style/msgbox.qss</file>
+        <file>style/login.qss</file>
+        <file>style/reset.qss</file>
     </qresource>
 </RCC>

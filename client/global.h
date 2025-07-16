@@ -23,6 +23,7 @@ extern QString gate_server_prefix;
 enum ReqId {
     ID_GET_VERIFY_CODE = 1001, // 获取验证码
     ID_REG_USER = 1002,         // 用户注册
+    ID_RESET_PWD = 1003,
 };
 /**
  * @brief The ErrorCodes enum
@@ -40,6 +41,7 @@ enum ErrorCodes {
  */
 enum Modules {
     REGISTERMOD = 0,    // 注册模块
+    RESETPWDMOD = 1,
 };
 
 #endif // GLOBAL_H

@@ -1,33 +1,28 @@
-#include <QMessageBox>
-#include "registerdialog.h"
-#include "ui_registerdialog.h"
-#include "global.h"
+#include "resetdialog.h"
+#include "ui_resetdialog.h"
 #include "httpmanager.h"
-RegisterDialog::RegisterDialog(QWidget *parent)
+#include <QMessageBox>
+ResetDialog::ResetDialog(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::RegisterDialog)
+    , ui(new Ui::ResetDialog)
 {
     ui->setupUi(this);
     setupUI();
-    // 文本框输入不显示原始字符
-    // ui->pass_edit->setEchoMode(QLineEdit::Password);
-    // ui->pass_confirm_edit->setEchoMode(QLineEdit::Password);
-    // ui->err_tip->setProperty("state", "normal");
-    // repolish(ui->err_tip);
-    connect(ui->verification_code, &VerificationCodeEdit::requestCodeClicked, this, &RegisterDialog::handleRequestCode);
-    connect(ui->register_btn, &QPushButton::clicked, this, &RegisterDialog::handleRequestRegistration);
-    connect(ui->cancel_btn, &QPushButton::clicked, this, &RegisterDialog::switchLogin);
-    connect(HttpManager::getInstance().get(), &HttpManager::sigRegisterModFinish,
-            this, &RegisterDialog::handleRegisterFinish);
     initHttpHandlers();
+    connect(ui->verification_code, &VerificationCodeEdit::requestCodeClicked, this, &ResetDialog::handleRequestCode);
+    connect(ui->confirm_btn, &QPushButton::clicked, this, &ResetDialog::handleRequestReset);
+    connect(ui->cancel_btn, &QPushButton::clicked, this, &ResetDialog::switchLogin);
+    connect(HttpManager::getInstance().get(), &HttpManager::sigResetModFinish,
+            this, &ResetDialog::handleResetFinish);
+
 }
 
-RegisterDialog::~RegisterDialog()
+ResetDialog::~ResetDialog()
 {
     delete ui;
 }
 
-void RegisterDialog::loadStyleSheet(const QString &file_path)
+void ResetDialog::loadStyleSheet(const QString &file_path)
 {
     QFile file(file_path);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
@@ -37,11 +32,11 @@ void RegisterDialog::loadStyleSheet(const QString &file_path)
     }
 }
 
-void RegisterDialog::setupUI()
+
+void ResetDialog::setupUI()
 {
     ui->account_name->setPlaceholderText("账户名");
     ui->password->setPlaceholderText("密码");
-    ui->pass_confirm->setPlaceholderText("确认密码");
     ui->email->setPlaceholderText("邮箱");
     ui->verification_code->setPlaceholderText("验证码");
     // 各个validate
@@ -72,16 +67,6 @@ void RegisterDialog::setupUI()
         int type_cnt = (has_symbol ? 1 :0) + (has_digit ? 1 : 0) + (has_letter ? 1 : 0);
         if (type_cnt < 2) {
             return "密码必须包含字母, 数字, 符号中的至少2种";
-        }
-        return "";
-    });
-
-    ui->pass_confirm->setValidator([this](const QString& text) {
-        if (text.isEmpty()) {
-            return "密码不能为空";
-        }
-        if (ui->password->text() != text) {
-            return "两次输入的密码不一致";
         }
         return "";
     });
@@ -119,7 +104,7 @@ void RegisterDialog::setupUI()
     ui->loading_widget->hide();
 }
 
-void RegisterDialog::initHttpHandlers()
+void ResetDialog::initHttpHandlers()
 {
     handlers_.insert(ReqId::ID_GET_VERIFY_CODE, [this](const QJsonObject& json_obj) {
 
@@ -133,7 +118,7 @@ void RegisterDialog::initHttpHandlers()
         // showTip(tr("验证码已发送到邮箱，注意查收"), true);
         qDebug() << "email: " << email;
     });
-    handlers_.insert(ReqId::ID_REG_USER, [this](const QJsonObject& json_obj) {
+    handlers_.insert(ReqId::ID_RESET_PWD, [this](const QJsonObject& json_obj) {
 
         int error = json_obj["error"].toInt();
         if (error != ErrorCodes::SUCCESS) {
@@ -149,7 +134,7 @@ void RegisterDialog::initHttpHandlers()
     });
 }
 
-void RegisterDialog::showTipMessageBox(const QString &title, const QString &text, int timeout)
+void ResetDialog::showTipMessageBox(const QString &title, const QString &text, int timeout)
 {
     QMessageBox msgBox(this);
 
@@ -188,7 +173,8 @@ void RegisterDialog::showTipMessageBox(const QString &title, const QString &text
     msgBox.exec();
 }
 
-void RegisterDialog::handleRequestCode()
+
+void ResetDialog::handleRequestCode()
 {
     // 验证email栏有无问题
     ui->email->validate();
@@ -202,16 +188,15 @@ void RegisterDialog::handleRequestCode()
         QJsonObject post_json;
         post_json["email"] = ui->email->text();
         HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/post_verifycode"),
-                                                post_json, ReqId::ID_GET_VERIFY_CODE, Modules::REGISTERMOD);
+                                                post_json, ReqId::ID_GET_VERIFY_CODE, Modules::RESETPWDMOD);
     }
     // 否则email栏会给出提示
 }
 
-void RegisterDialog::handleRequestRegistration() {
-    // 如何遍历?
+void ResetDialog::handleRequestReset()
+{
     ui->account_name->validate();
     ui->password->validate();
-    ui->pass_confirm->validate();
     ui->email->validate();
     ui->verification_code->validate();
     if (!ui->account_name->isValid()) {
@@ -219,9 +204,6 @@ void RegisterDialog::handleRequestRegistration() {
     }
 
     if (!ui->password->isValid()) {
-        return;
-    }
-    if (!ui->pass_confirm->isValid()) {
         return;
     }
 
@@ -241,25 +223,12 @@ void RegisterDialog::handleRequestRegistration() {
     json_obj["user"] = ui->account_name->text();
     json_obj["email"] = ui->email->text();
     json_obj["pass"] = ui->password->text();
-    json_obj["pass_confirm"] = ui->pass_confirm->text();
     json_obj["verify_code"] = ui->verification_code->text();
-    HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/user_register"),
-                                            json_obj, ReqId::ID_REG_USER, Modules::REGISTERMOD);
+    HttpManager::getInstance()->postHttpReq(QUrl(gate_server_prefix + "/user_resetpwd"),
+                                            json_obj, ReqId::ID_RESET_PWD, Modules::RESETPWDMOD);
 }
 
-// void RegisterDialog::showTip(QString str, bool b_ok)
-// {
-//     // if (b_ok) {
-//     //     ui->err_tip->setProperty("state", "normal");
-//     // } else {
-//     //     ui->err_tip->setProperty("state", "err");
-//     // }
-//     // ui->err_tip->setText(str);
-//     // repolish(ui->err_tip);
-// }
-
-
-void RegisterDialog::handleRegisterFinish(ReqId id, QString res, ErrorCodes err)
+void ResetDialog::handleResetFinish(ReqId id, QString res, ErrorCodes err)
 {
     ui->loading_widget->stop();
     ui->loading_widget->hide();
@@ -276,9 +245,7 @@ void RegisterDialog::handleRegisterFinish(ReqId id, QString res, ErrorCodes err)
         showTipMessageBox("错误提示", "json解析失败", 5000);
         return;
     }
-
-
+    // 具体的处理函数中处理
     handlers_[id](json_doc.object());
     return;
 }
-

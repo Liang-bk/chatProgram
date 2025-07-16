@@ -14,11 +14,14 @@ class LoginDialog : public QDialog
 public:
     explicit LoginDialog(QWidget *parent = nullptr);
     ~LoginDialog();
-
+    void loadStyleSheet(const QString& file_path);
+private:
+    void showTipMessageBox(const QString& title, const QString& text, int timeout = 5000);
 private:
     Ui::LoginDialog *ui;
 signals:
     void switchRegister();
+    void switchReset();
 };
 
 #endif // LOGINDIALOG_H
