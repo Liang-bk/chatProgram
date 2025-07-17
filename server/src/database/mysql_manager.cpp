@@ -19,6 +19,6 @@ void MySQLManager::init(const std::string &url, const std::string &user,
     inited_ = true;
 }
 
-std::pair<ErrorCodes, int> MySQLManager::registerUser(const std::string &name, const std::string &email, const std::string &password) {
+ErrorCodes MySQLManager::registerUser(const std::string &name, const std::string &email, const std::string &password) {
     return dao_->userRegister(name, email, password);
 }

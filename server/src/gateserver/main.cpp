@@ -10,6 +10,7 @@
 #include <jdbc/mysql_driver.h>
 #include <jdbc/cppconn/prepared_statement.h>
 #include <jdbc/cppconn/statement.h>
+#include <net/asio_iocontext_pool.h>
 #include <rpc/verify_grpc_client.h>
 #include <sw/redis++/redis.h>
 #include <sw/redis++/connection_pool.h>
@@ -33,11 +34,14 @@ void loadConfig() {
     std::string mysql_user = (*config)["MySQL"]["User"].asString();
     std::string mysql_schema = (*config)["MySQL"]["Schema"].asString();
     std::string mysql_url = "tcp://" + mysql_host + ":" + std::to_string(mysql_port);
-
+    // verification code request connection init
     VerifyGrpcClient::getInstance()->init(verify_server_h, verify_server_p, 10);
+    // redis connection init
     RedisManager::getInstance()->init(redis_host, redis_port, redis_pass, 20, std::chrono::milliseconds(500));
+    // mysql connection init
     MySQLManager::getInstance()->init(mysql_url, mysql_user, mysql_pass, mysql_schema, 12);
-    // iocontextpool
+    // iocontext pool start
+    AsioIOContextPool::getInstance();
 }
 int main() {
     // try {

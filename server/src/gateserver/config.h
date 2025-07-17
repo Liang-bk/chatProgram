@@ -12,7 +12,7 @@
 class Config : public Singleton<Config> {
     friend class Singleton<Config>;
 public:
-    ~Config();
+    ~Config() override;
     const Json::Value& getValue(const std::string& key);
     const Json::Value& operator[] (const std::string& key);
 private:

@@ -56,7 +56,10 @@ public:
     MySQLDAO(const std::string& url, const std::string& user, const std::string& pass,
         const std::string& schema, size_t pool_size);
     ~MySQLDAO();
-    std::pair<ErrorCodes, int> userRegister(const std::string &name, const std::string& email, const std::string &password);
+    ErrorCodes userExist(const std::string& name);
+    ErrorCodes checkUserMatchEmail(const std::string& name, const std::string& email);
+    ErrorCodes userRegister(const std::string &name, const std::string& email, const std::string &password);
+    ErrorCodes resetPassword(const std::string &name, const std::string &password);
 private:
     std::unique_ptr<SQLConnPool> conn_pool_;
 };

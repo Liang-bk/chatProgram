@@ -161,26 +161,104 @@ MySQLDAO::~MySQLDAO() {
     conn_pool_->close();
 }
 
-/**
- * 用户注册功能, 调用数据库过程进行注册, 并返回错误结果
- * @param name 账户名, 唯一标识
- * @param email 邮箱
- * @param password 密码
- * @return (ErrorCodes, id)
- */
-std::pair<ErrorCodes, int> MySQLDAO::userRegister(const std::string &name, const std::string &email, const std::string &password) {
+ErrorCodes MySQLDAO::userExist(const std::string &name) {
     auto conn = conn_pool_->getSQLConn();
     Defer defer([this, &conn]() {
         conn_pool_->returnSQLConn(std::move(conn));
     });
     try {
         if (conn == nullptr) {
-            return {SQL_ERROR, -1};
+            return SQL_ERROR;
+        }
+        std::unique_ptr<sql::PreparedStatement> pstmt(conn->conn->prepareStatement("SELECT COUNT(*) AS cnt FROM users WHERE uid = ?"));
+        pstmt->setString(1, name);
+        std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+        if (res->next()) {
+            int count = res->getInt("cnt");
+            if (count > 0) {
+                return USER_EXIST;
+            } else {
+                return USER_NOT_EXIST;
+            }
+        }
+        return SQL_ERROR;
+    } catch (sql::SQLException& e) {
+        std::cout << "MySQL try to judge " << name << " is exist , but failed: " << e.what() << std::endl;
+        return SQL_ERROR;
+    }
+
+}
+
+ErrorCodes MySQLDAO::checkUserMatchEmail(const std::string &name, const std::string &email) {
+    auto conn = conn_pool_->getSQLConn();
+    Defer defer([this, &conn]() {
+        conn_pool_->returnSQLConn(std::move(conn));
+    });
+    try {
+        if (conn == nullptr) {
+            return SQL_ERROR;
+        }
+        std::unique_ptr<sql::PreparedStatement> pstmt(
+            conn->conn->prepareStatement(
+                "SELECT email FROM users WHERE uid = ?"));
+        pstmt->setString(1, name);
+        std::unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
+        // 账户名唯一, 最多只有一个结果
+        if (res->next()) {
+            if (email != res->getString("email")) {
+                return USER_MAIL_NOT_MATCH;
+            } else {
+                return SUCCESS;
+            }
+        }
+        // 没有这个账户名, 也不匹配
+        return USER_MAIL_NOT_MATCH;
+    } catch (sql::SQLException& e) {
+        std::cout << "MySQL try to check " << name << ' ' << email << " is matched, but failed: " << e.what() << std::endl;
+        return SQL_ERROR;
+    }
+}
+
+ErrorCodes MySQLDAO::resetPassword(const std::string &name, const std::string &password) {
+    auto conn = conn_pool_->getSQLConn();
+    Defer defer([this, &conn]() {
+        conn_pool_->returnSQLConn(std::move(conn));
+    });
+    try {
+        if (conn == nullptr) {
+            return SQL_ERROR;
+        }
+        // 更新语句
+        std::unique_ptr<sql::PreparedStatement> pstmt(conn->conn->prepareStatement("UPDATE users SET password_hash = ? WHERE uid = ?"));
+        // 设置参数
+        pstmt->setString(1, password);
+        pstmt->setString(2, name);
+        int update_count = pstmt->executeUpdate();
+        std::cout << "resetPassword: update rows " << update_count << std::endl;
+        return SUCCESS;
+    } catch (sql::SQLException& e) {
+        std::cout << "MySQL try to reset " << name << "'s password , but failed: " << e.what() << std::endl;
+        return SQL_ERROR;
+    }
+}
+
+/**
+ * 用户注册功能, 调用数据库过程进行注册, 并返回错误结果
+ * @param name 账户名, 唯一标识
+ * @param email 邮箱
+ * @param password 密码
+ * @return ErrorCodes
+ */
+ErrorCodes MySQLDAO::userRegister(const std::string &name, const std::string &email, const std::string &password) {
+    auto conn = conn_pool_->getSQLConn();
+    Defer defer([this, &conn]() {
+        conn_pool_->returnSQLConn(std::move(conn));
+    });
+    try {
+        if (conn == nullptr) {
+            return SQL_ERROR;
         }
         size_t email_loc = email.find('@');
-        // if (email_loc == std::string::npos) {
-        //     return {};
-        // }
         std::string username = email.substr(0, email_loc);
         // 调用已写好的存储过程
         std::unique_ptr<sql::Statement> stmt_init(conn->conn->createStatement());
@@ -199,7 +277,7 @@ std::pair<ErrorCodes, int> MySQLDAO::userRegister(const std::string &name, const
         stmt->setString(4, password);
         // 执行
         if (stmt->execute()) {
-            std::unique_ptr<sql::ResultSet> _(stmt_init->getResultSet());
+            std::unique_ptr<sql::ResultSet> _(stmt->getResultSet());
         }
 
         // 由于PreparedStatement不直接支持注册输出参数，我们需要使用会话变量或其他方法来获取输出参数的值
@@ -210,16 +288,16 @@ std::pair<ErrorCodes, int> MySQLDAO::userRegister(const std::string &name, const
             int status = res->getInt("status");
             int id = res->getInt("id");
             switch (status) {
-                case 0: return {SUCCESS, id};
-                case 1: return {MAIL_MAX_ERROR, -1};
-                case 2: return {USER_EXIST, -1};
-                case 3: return {SQL_ERROR, -1};
-                default: return {SQL_ERROR, -1};
+                case 0: return SUCCESS;
+                case 1: return MAIL_MAX_ERROR;
+                case 2: return USER_EXIST;
+                case 3: return SQL_ERROR;
+                default: return SQL_ERROR;
             }
         }
-        return {SQL_ERROR, -1};
+        return SQL_ERROR;
     } catch (sql::SQLException& e) {
         std::cout << "MySQL try to register a user, but failed: " << e.what() << std::endl;
-        return {SQL_ERROR, -1};
+        return SQL_ERROR;
     }
 }

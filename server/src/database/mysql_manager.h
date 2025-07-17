@@ -13,11 +13,11 @@ class MySQLDAO;
 class MySQLManager:public Singleton<MySQLManager> {
     friend class Singleton<MySQLManager>;
 public:
-    ~MySQLManager();
+    ~MySQLManager() override;
     void init(const std::string& url, const std::string& user, const std::string& pass,
         const std::string& schema, size_t pool_size);
 
-    std::pair<ErrorCodes, int> registerUser(const std::string& name,
+    ErrorCodes registerUser(const std::string& name,
         const std::string &email, const std::string& password);
 private:
     MySQLManager();

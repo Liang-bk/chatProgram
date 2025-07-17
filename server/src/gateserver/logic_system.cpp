@@ -80,32 +80,81 @@ LogicSystem::LogicSystem() {
         // 验证码不存在或缓存消失
         if (!verify_code) {
             std::cout << "user_register: " << ip << ":" << port << " : access a not existed verification code" << std::endl;
-            response_json["error"] = ErrorCodes::VCODE_NOT_EXIST;
+            response_json["error"] = ErrorCodes::VCODE_ERROR;
             beast::ostream(connection->response_.body()) << response_json.toStyledString();
             return true;
         }
         // 验证码不相等
         if (verify_code.value() != request_json["verify_code"].asString()) {
             std::cout << "user_register: " << ip << ":" << port << " : invalid verify code" << std::endl;
-            response_json["error"] = ErrorCodes::VCODE_INVALID;
+            response_json["error"] = ErrorCodes::VCODE_ERROR;
             beast::ostream(connection->response_.body()) << response_json.toStyledString();
             return true;
         }
-        // mysql查找用户是否存在
+        // TODO: mysql查询用户是否存在
+
+        // mysql调用过程去尝试注册
         auto sql_query_res = MySQLManager::getInstance()->registerUser(request_json["user"].asString(),
             request_json["email"].asString(), request_json["pass"].asString());
         // 返回注册结果
-        response_json["error"] = sql_query_res.first;
-        response_json["id"] = sql_query_res.second;
+        response_json["error"] = sql_query_res;
         std::cout << "user_register: " << ip << ":" << port << " : result is" << response_json.toStyledString() << std::endl;
         beast::ostream(connection->response_.body()) << response_json.toStyledString();
         return true;
     });
+
+    // 127.0.0.1/reset_pwd
+    registerPost("/reset_pwd", [](std::shared_ptr<HttpConnection> connection) {
+        std::string ip = connection->socket_.remote_endpoint().address().to_string();
+        int port = connection->socket_.remote_endpoint().port();
+
+        auto body = boost::beast::buffers_to_string(connection->request_.body().data());
+        std::cout << "reset_pwd received: " << ip << ":" << port << " :" << body << std::endl;
+        // response 使用json返回
+        connection->response_.set(http::field::content_type, "text/json");
+
+        Json::Value request_json, response_json;
+        Json::Reader reader;
+        bool parse_success = reader.parse(body, request_json);
+        if (!parse_success) {
+            std::cout << "reset_pwd: " << ip << ":" << port <<  " : illegal request json!" << std::endl;
+            response_json["error"] = ErrorCodes::JSON_ERROR;
+            beast::ostream(connection->response_.body()) << response_json.toStyledString();
+            return true;
+        }
+        // redis查询验证码
+        auto& redis = RedisManager::getInstance()->getRedis();
+        auto verify_code = redis.get(CODE_PREFIX + request_json["email"].asString());
+        // 验证码不存在或缓存消失
+        if (!verify_code) {
+            std::cout << "reset_pwd: " << ip << ":" << port << " : access a not existed verification code" << std::endl;
+            response_json["error"] = ErrorCodes::VCODE_ERROR;
+            beast::ostream(connection->response_.body()) << response_json.toStyledString();
+            return true;
+        }
+        // 验证码不相等
+        if (verify_code.value() != request_json["verify_code"].asString()) {
+            std::cout << "user_register: " << ip << ":" << port << " : invalid verify code" << std::endl;
+            response_json["error"] = ErrorCodes::VCODE_ERROR;
+            beast::ostream(connection->response_.body()) << response_json.toStyledString();
+            return true;
+        }
+        // TODO: 账户名要和邮箱对应
+        auto sql_query_res = MySQLManager::getInstance()->registerUser(request_json["user"].asString(),
+            request_json["email"].asString(), request_json["pass"].asString());
+        // TODO: 更新密码
+
+        // 返回重置结果
+        response_json["error"] = sql_query_res;
+        std::cout << "user_register: " << ip << ":" << port << " : result is" << response_json.toStyledString() << std::endl;
+        beast::ostream(connection->response_.body()) << response_json.toStyledString();
+        return true;
+
+
+    });
 }
 
-LogicSystem::~LogicSystem() {
-
-}
+LogicSystem::~LogicSystem() = default;
 
 void LogicSystem::registerGet(std::string url, HttpHandler handler) {
     get_handler_.insert(make_pair(url, handler));

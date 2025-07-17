@@ -17,10 +17,13 @@ enum ErrorCodes {
     JSON_ERROR = 1001,  // JSON解析失败
     RPC_FAILED = 1002,  // RPC请求失败
     SQL_ERROR = 1003,   // sql数据库错误
-    VCODE_NOT_EXIST = 1004, // 验证码不存在
-    VCODE_INVALID = 1005, // 验证码不匹配
-    USER_EXIST = 1006, // 用户已存在
-    MAIL_MAX_ERROR = 1007, // 邮箱超限
+    VCODE_ERROR = 1004, // 验证码错误
+    USER_EXIST = 1006, // 账户已存在
+    USER_NOT_EXIST = 1007, // 账户不存在
+    MAIL_MAX_ERROR = 1008, // 邮箱超限
+    USER_MAIL_NOT_MATCH = 1009, //账户和邮箱不匹配
+    PWD_UPDATE_FAILED = 1010, // 密码更新失败
+
 };
 
 #endif //CONSTANT_H

@@ -15,7 +15,7 @@ class RedisManager : public Singleton<RedisManager> {
     friend class Singleton<RedisManager>;
 
 public:
-    ~RedisManager();
+    ~RedisManager() override;
     void init(const std::string &host, const int port, const std::string &pass,
         const size_t pool_size, const std::chrono::milliseconds& wait_time);
     sw::redis::Redis& getRedis();

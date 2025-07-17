@@ -78,6 +78,8 @@ void HttpConnection::start() {
             }
             boost::ignore_unused(bytes_transferred);
             // 处理http请求
+            // handleRequest里LogicSystem使用同步IO网络请求, 速度慢会卡死当前的IO_CONTEXT
+            // TODO: handleRequest内部逻辑应改为类似异步请求, 调用LogicSystem处理函数后直接返回
             self->handleRequest();
             // 发送响应是否超时, 超时则关闭socket_
             self->checkDeadLine();
@@ -94,6 +96,7 @@ tcp::socket& HttpConnection::getSocket() {
 
 void HttpConnection::checkDeadLine() {
     auto self = shared_from_this();
+    // 注册的是deadline这个计时器, 固定时间未发送或者发送完毕后被取消了都会触发回调
     deadline_.async_wait([self](beast::error_code ec) {
         if (!ec) {
             self->socket_.close();

@@ -15,7 +15,7 @@ using HttpHandler = std::function<void(std::shared_ptr<HttpConnection>)>;
 class LogicSystem : public Singleton<LogicSystem> {
     friend class Singleton<LogicSystem>;
 public:
-    ~LogicSystem();
+    ~LogicSystem() override;
     // path -> 处理哪个连接
     bool handlePost(std::string path, std::shared_ptr<HttpConnection> conn);
     // path -> 处理哪个连接
